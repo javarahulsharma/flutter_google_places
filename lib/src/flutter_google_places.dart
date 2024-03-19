@@ -2,6 +2,7 @@ library flutter_google_places.src;
 
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -286,6 +287,7 @@ class PlacesAutocompleteResultState extends State<PlacesAutocompleteResult> {
       return Stack(children: children);
     }
     return PredictionsListView(
+      queryTextController: state._queryTextController,
       predictions: state._response!.predictions,
       onTap: widget.onTap,
       resultTextStyle: widget.resultTextStyle,
@@ -383,6 +385,7 @@ class PoweredByGoogleImage extends StatelessWidget {
 
 class PredictionsListView extends StatelessWidget {
   final List<Prediction> predictions;
+  final TextEditingController? queryTextController;
   final ValueChanged<Prediction>? onTap;
   final TextStyle? resultTextStyle;
 
@@ -391,11 +394,15 @@ class PredictionsListView extends StatelessWidget {
     required this.predictions,
     this.onTap,
     this.resultTextStyle,
+    this.queryTextController,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    if (predictions.isEmpty && queryTextController!.text.isEmpty) {
+      return const Center(child: Text("No Matching Address"),);
+    } else {
+      return ListView(
       children: predictions
           .map(
             (Prediction p) => PredictionTile(
@@ -406,6 +413,7 @@ class PredictionsListView extends StatelessWidget {
           )
           .toList(),
     );
+    }
   }
 }
 
