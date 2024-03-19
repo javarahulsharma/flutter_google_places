@@ -166,12 +166,12 @@ class _PlacesAutocompleteOverlayState extends PlacesAutocompleteState {
           _response == null ||
           _response!.predictions.isEmpty) {
         body = Material(
-          color: theme.dialogBackgroundColor,
+          color: Colors.red,
           borderRadius: BorderRadius.only(
             bottomLeft: bodyBottomLeftBorderRadius,
             bottomRight: bodyBottomRightBorderRadius,
           ),
-          child: widget.logo ?? const PoweredByGoogleImage(),
+          child: Center(child: Text("Helo", style: TextStyle(color: Colors.red),)),
         );
       } else {
         body = SingleChildScrollView(
@@ -181,8 +181,8 @@ class _PlacesAutocompleteOverlayState extends PlacesAutocompleteState {
               bottomRight: bodyBottomRightBorderRadius,
             ),
             color: theme.dialogBackgroundColor,
-            child: ListBody(
-              children: _response!.predictions
+            child: _response!.predictions.isEmpty ? Center(child: Text("Helo", style: TextStyle(color: Colors.red),)) : ListBody(
+              children:  _response!.predictions
                   .map(
                     (p) => PredictionTile(
                       prediction: p,
@@ -282,6 +282,13 @@ class PlacesAutocompleteResultState extends State<PlacesAutocompleteResult> {
       final children = <Widget>[];
       if (state._searching) {
         children.add(_Loader());
+      }
+      if (state._queryTextController!.text.isNotEmpty){
+        children.add(
+            Center(child: Text('No matching address found.',style: TextStyle(color: Theme.of(context).brightness != Brightness.light
+                ? Colors.white
+                : Colors.black,),),)
+        );
       }
       children.add(widget.logo ?? const PoweredByGoogleImage());
       return Stack(children: children);
